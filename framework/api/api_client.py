@@ -8,6 +8,9 @@ class APIClient:
         self.headers = headers or {}
         self.timeout = timeout
 
+    def set_auth_token(self, token):
+        self.headers["Authorization"] = f"Bearer {token}"    
+
     def get(self, endpoint, headers=None, params=None):
 
         request_headers = {

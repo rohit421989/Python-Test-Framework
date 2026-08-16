@@ -1,15 +1,18 @@
 import pytest
 
+from framework.utilities.response_validator import ResponseValidator
 
 @pytest.mark.api
 def test_get_users(api_client):
 
     response = api_client.get("/users",params={"id": 1  })
 
-    assert response.status_code == 200
+    ResponseValidator.assert_status_code(
+        response,
+        200
+    )
 
     users = response.json()
-
     assert len(users) > 0
 
 @pytest.mark.api
