@@ -5,7 +5,7 @@ from framework.utilities.response_validator import ResponseValidator
 @pytest.mark.api
 def test_get_users(api_client):
 
-    response = api_client.get("/users",params={"id": 1  })
+    response = api_client.get("/users")
 
     ResponseValidator.assert_status_code(
         response,

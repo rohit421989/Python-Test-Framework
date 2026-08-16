@@ -1,5 +1,5 @@
 import requests
-
+from framework.logging.logger import Logger
 
 class APIClient:
 
@@ -7,6 +7,10 @@ class APIClient:
         self.base_url = base_url
         self.headers = headers or {}
         self.timeout = timeout
+
+        self.logger = Logger.get_logger(
+            self.__class__.__name__
+        )
 
     def set_auth_token(self, token):
         self.headers["Authorization"] = f"Bearer {token}"    
@@ -18,12 +22,21 @@ class APIClient:
             **(headers or {})
         }
 
-        return requests.get(
+        self.logger.info(
+            f"GET request: {endpoint}"
+        )
+
+        response = requests.get(
             f"{self.base_url}{endpoint}",
             headers=request_headers,
             params=params,
             timeout=self.timeout
         )
+
+        self.logger.info(
+            f"Response status: {response.status_code}"
+        )
+        return response
 
     def post(self, endpoint, data=None, headers=None):
 
@@ -32,12 +45,21 @@ class APIClient:
             **(headers or {})
         }
 
-        return requests.post(
+        self.logger.info(
+            f"POST request: {endpoint}"
+        )
+
+        response = requests.post(
             f"{self.base_url}{endpoint}",
             json=data,
             headers=request_headers,
             timeout=self.timeout
         )
+
+        self.logger.info(
+            f"Response status: {response.status_code}"
+        )
+        return response
 
     def put(self, endpoint, data=None, headers=None):
 

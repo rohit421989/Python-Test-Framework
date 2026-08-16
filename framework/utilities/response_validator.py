@@ -1,9 +1,18 @@
+from framework.logging.logger import Logger
+
 class ResponseValidator:
+    logger = Logger.get_logger("ResponseValidator")
 
     @staticmethod
     def assert_status_code(response, expected_status_code):
 
         actual_status_code = response.status_code
+
+        ResponseValidator.logger.info(
+            f"Validating status code: "
+            f"expected={expected_status_code}, "
+            f"actual={actual_status_code}"
+        )
 
         assert actual_status_code == expected_status_code, (
             f"Expected status code "
