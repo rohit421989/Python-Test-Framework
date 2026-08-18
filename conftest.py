@@ -3,6 +3,7 @@ import pytest
 
 from config.config import Config
 from framework.api.api_client import APIClient
+from framework.database.db_client import DBClient
 
 
 @pytest.fixture
@@ -39,4 +40,35 @@ def api_client():
     return APIClient(
         base_url=Config.get_base_url(),
         headers=headers
-    )  
+    )
+
+
+@pytest.fixture
+def db_client():
+
+    client = DBClient(
+        "sqlite:///test.db"
+    )
+
+    yield client
+
+    client.close()
+
+
+@pytest.fixture
+def clean_users_table(db_client):
+
+    db_client.execute_update(
+        """
+        DROP TABLE IF EXISTS users
+        """
+    )
+
+    yield
+
+    db_client.execute_update(
+        """
+        DROP TABLE IF EXISTS users
+        """
+    )    
+
