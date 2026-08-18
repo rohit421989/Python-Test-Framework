@@ -1,6 +1,7 @@
 import pytest
 
 from framework.utilities.response_validator import ResponseValidator
+from framework.api.schemas.user_schema import UserSchema
 
 @pytest.mark.api
 def test_get_users(api_client):

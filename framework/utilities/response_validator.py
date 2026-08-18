@@ -1,3 +1,5 @@
+from urllib import response
+
 from framework.logging.logger import Logger
 
 class ResponseValidator:
@@ -32,3 +34,22 @@ class ResponseValidator:
             f"'{expected_value}', "
             f"but received '{actual_value}'"
         )
+
+
+    @staticmethod
+    def validate_schema(response, schema):
+
+        response_data = response.json()
+
+        try:
+            schema.model_validate(response_data)
+
+        except Exception as error:
+
+            ResponseValidator.logger.error(
+            f"Schema validation failed: {error}"
+        )
+
+        raise AssertionError(
+            f"Response schema validation failed: {error}"
+        )    
