@@ -1,3 +1,5 @@
+from curses import error
+
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from framework.logging.logger import Logger
@@ -7,42 +9,62 @@ class BasePage:
 
     def __init__(self, driver, timeout=10):
 
-        self.logger = Logger.get_logger(
-        self.__class__.__name__
-    )
-
         self.driver = driver
 
+        self.driver.set_page_load_timeout(30)
+
         self.wait = WebDriverWait(
-            driver,
-            timeout
-            
-        )
+        driver,
+        timeout
+    )
+
+        self.logger = Logger.get_logger(
+            self.__class__.__name__
+    )
 
     def click(self, locator):
 
         self.logger.info(
-        f"Clicking element: {locator}"
+            f"Clicking element: {locator}"
         )
 
-        element = self.wait.until(
-            EC.element_to_be_clickable(locator)
-    )
+        try:
 
-        element.click()
+            element = self.wait.until(
+                EC.element_to_be_clickable(locator)
+            )
+
+            element.click()
+
+        except Exception as error:
+
+            self.logger.error(
+            f"Failed to click {locator}: {error}"
+            )
+            raise
 
     def enter_text(self, locator, text):
 
         self.logger.info(
-        f"Entering text into: {locator}"
+            f"Entering text into: {locator}"
         )
 
-        element = self.wait.until(
-            EC.visibility_of_element_located(locator)
-        )
+        try:
 
-        element.clear()
-        element.send_keys(text)
+            element = self.wait.until(
+                EC.visibility_of_element_located(locator)
+            )
+
+            element.clear()
+            element.send_keys(text)
+
+        except Exception as error:
+
+            self.logger.error(
+                f"Failed to enter text into "
+                f"{locator}: {error}"
+            )
+            raise
 
     def get_text(self, locator):
 
@@ -96,3 +118,11 @@ class BasePage:
         return self.wait.until(
             EC.visibility_of_element_located(locator)
         )
+
+    def open(self, url):
+
+        self.logger.info(
+        f"Opening URL: {url}"
+    )
+
+        self.driver.get(url)
