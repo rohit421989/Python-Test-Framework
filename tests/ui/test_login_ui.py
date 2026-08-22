@@ -1,10 +1,10 @@
+import allure
 import pytest
 
 from framework.ui.pages.login_page import LoginPage
 from config.ui_config import UIConfig
 from framework.ui.pages.login_page import LoginPage
-import allure
-import pytest
+
 
 @allure.feature("Authentication")
 @allure.story("User Login")
