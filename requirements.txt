@@ -1,8 +1,9 @@
 pytest
+pytest-html
+pytest-xdist
+allure-pytest
 requests
 python-dotenv
 pydantic
 sqlalchemy
 selenium
-allure-pytest
-pytest-xdist
