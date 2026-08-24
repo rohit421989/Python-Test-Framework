@@ -1,5 +1,6 @@
 import subprocess
 import sys
+from config.execution_config import ExecutionConfig
 from pathlib import Path
 from framework.utilities.report_manager import (
     ReportManager
@@ -22,8 +23,11 @@ def main():
         "-m",
         "pytest",
         "-v",
+        "-n",
+        ExecutionConfig.WORKERS,
         "--html=reports/html/report.html",
-        "--self-contained-html"
+        "--self-contained-html",
+        "--alluredir=reports/allure-results"
     ]
 
     result = subprocess.run(

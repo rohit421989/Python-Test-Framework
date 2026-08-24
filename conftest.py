@@ -1,11 +1,13 @@
 import pytest
 import allure
+import os
 
 from config.config import Config
 from framework.api.api_client import APIClient
 from framework.database.db_client import DBClient
 from framework.ui.browser_factory import BrowserFactory
 from framework.utilities.screenshot import ScreenshotUtil
+from pathlib import Path
 
 
 @pytest.fixture
@@ -48,10 +50,21 @@ def api_client():
 
 
 @pytest.fixture
-def db_client():
+def db_client(request):
+
+    worker_id = getattr(
+        request.config,
+        "workerinput",
+        {}
+    ).get(
+        "workerid",
+        "master"
+    )
+
+    database_name = f"test_{worker_id}.db"
 
     client = DBClient(
-        "sqlite:///test.db"
+        f"sqlite:///{database_name}"
     )
 
     yield client
@@ -92,6 +105,37 @@ def pytest_runtest_makereport(item, call):
 
 
 @pytest.fixture
+#def browser(request):
+
+    # driver = BrowserFactory.create_browser()
+
+    # yield driver
+
+    # try:
+
+    #     if getattr(
+    #         request.node,
+    #         "rep_call",
+    #         None
+    #     ) and request.node.rep_call.failed:
+
+    #         # Save screenshot using existing framework utility
+    #         ScreenshotUtil.capture(
+    #             driver,
+    #             request.node.name
+    #         )
+
+    #         # Attach screenshot directly to Allure
+    #         allure.attach(
+    #             driver.get_screenshot_as_png(),
+    #             name="Failure Screenshot",
+    #             attachment_type=allure.attachment_type.PNG
+    #         )
+
+    # finally:
+
+    #     driver.quit()
+
 def browser(request):
 
     driver = BrowserFactory.create_browser()
@@ -106,23 +150,40 @@ def browser(request):
             None
         ) and request.node.rep_call.failed:
 
-            # Save screenshot using existing framework utility
+            # Screenshot
             ScreenshotUtil.capture(
                 driver,
                 request.node.name
             )
 
-            # Attach screenshot directly to Allure
+            # Allure screenshot
             allure.attach(
                 driver.get_screenshot_as_png(),
                 name="Failure Screenshot",
                 attachment_type=allure.attachment_type.PNG
             )
 
+            # Allure log
+
+            worker_id = os.getenv(
+                "PYTEST_XDIST_WORKER",
+                "master"
+)
+            log_file = Path(
+                f"reports/logs/test_execution_{worker_id}.log"
+            )
+
+            if log_file.exists():
+
+                allure.attach.file(
+                    str(log_file),
+                    name=f"Execution Log - {worker_id}",
+                    attachment_type=allure.attachment_type.TEXT
+                )
+
     finally:
 
         driver.quit()
-
 
 
 

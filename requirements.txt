@@ -5,3 +5,4 @@ pydantic
 sqlalchemy
 selenium
 allure-pytest
+pytest-xdist

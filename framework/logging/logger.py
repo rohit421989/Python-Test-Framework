@@ -1,4 +1,5 @@
 import logging
+import os
 from pathlib import Path
 
 
@@ -13,6 +14,16 @@ class Logger:
             exist_ok=True
         )
 
+        worker_id = os.getenv(
+            "PYTEST_XDIST_WORKER",
+            "master"
+        )
+
+        log_file = (
+            log_directory /
+            f"test_execution_{worker_id}.log"
+        )
+
         logger = logging.getLogger(name)
 
         if not logger.handlers:
@@ -20,14 +31,15 @@ class Logger:
             logger.setLevel(logging.INFO)
 
             formatter = logging.Formatter(
-                "%(asctime)s | %(levelname)s | %(name)s | %(message)s"
+                "%(asctime)s | %(levelname)s | "
+                "%(name)s | %(message)s"
             )
 
             console_handler = logging.StreamHandler()
             console_handler.setFormatter(formatter)
 
             file_handler = logging.FileHandler(
-                log_directory / "test_execution.log"
+                log_file
             )
             file_handler.setFormatter(formatter)
 
