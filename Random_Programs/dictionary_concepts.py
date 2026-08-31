@@ -473,6 +473,75 @@ print("Section 19 OK:", as_json)
 
 
 # ======================================================================
+# SECTION 20 — Dictionary methods summary and return values
+# ======================================================================
+# A quick cheat sheet for the most common dictionary methods.
+# Each method has a distinct behavior and return type.
+
+summary_dict = {"a": 1, "b": 2}
+
+# .get() returns value or default instead of raising KeyError
+print("get('a') ->", summary_dict.get("a"), type(summary_dict.get("a")))
+print("get('missing', 'N/A') ->", summary_dict.get("missing", "N/A"), type(summary_dict.get("missing", "N/A")))
+
+# .setdefault() returns existing value; inserts if missing
+print("setdefault('c', 3) ->", summary_dict.setdefault("c", 3), type(summary_dict.setdefault("c", 3)))
+print("after setdefault, dict ->", summary_dict)
+print("setdefault('a', 99) ->", summary_dict.setdefault("a", 99), type(summary_dict.setdefault("a", 99)))
+
+# .copy() returns a new dictionary (shallow copy)
+copy_dict = summary_dict.copy()
+print("copy() ->", copy_dict, type(copy_dict))
+print("copy == original ->", copy_dict == summary_dict)
+print("copy is original ->", copy_dict is not summary_dict)
+
+# .clear() returns None and empties the dict
+cleared = {"x": 10, "y": 20}
+result = cleared.clear()
+print("clear() ->", result, type(result))
+print("after clear() ->", cleared)
+
+# .pop() removes and returns the value; default is optional
+fruit_prices = {"apple": 5, "banana": 7}
+print("pop('apple') ->", fruit_prices.pop("apple"), type(fruit_prices.pop("apple")))
+print("after pop ->", fruit_prices)
+print("pop('missing', 0) ->", fruit_prices.pop("missing", 0), type(fruit_prices.pop("missing", 0)))
+
+# .popitem() removes and returns the last inserted (key, value) pair
+pair_dict = {"first": 1, "second": 2}
+last_pair = pair_dict.popitem()
+print("popitem() ->", last_pair, type(last_pair))
+print("after popitem ->", pair_dict)
+
+# .keys(), .values(), .items() return view objects
+keys_view = summary_dict.keys()
+values_view = summary_dict.values()
+items_view = summary_dict.items()
+print("keys() ->", keys_view, type(keys_view))
+print("values() ->", values_view, type(values_view))
+print("items() ->", items_view, type(items_view))
+print("list(keys()) ->", list(keys_view))
+print("list(values()) ->", list(values_view))
+print("list(items()) ->", list(items_view))
+
+# .update() returns None and mutates the original dict
+update_target = {"name": "Asha"}
+update_result = update_target.update({"age": 30, "city": "Bengaluru"})
+print("update() ->", update_result, type(update_result))
+print("after update ->", update_target)
+
+# .fromkeys() creates a new dict with the same value for every key
+fromkeys_dict = dict.fromkeys(["x", "y", "z"], 0)
+print("fromkeys() ->", fromkeys_dict, type(fromkeys_dict))
+
+# dictionary membership checks return bool
+print("'a' in summary_dict ->", "a" in summary_dict, type("a" in summary_dict))
+print("'missing' in summary_dict ->", "missing" in summary_dict, type("missing" in summary_dict))
+
+print("Section 20 OK: dictionary method cheat sheet verified")
+
+
+# ======================================================================
 # ALL SECTIONS PASSED
 # ======================================================================
-print("\nAll 19 sections executed and all assertions passed.")
+print("\nAll 20 sections executed and all assertions passed.")
