@@ -7,6 +7,7 @@ from framework.api.api_client import APIClient
 from framework.database.db_client import DBClient
 from framework.ui.browser_factory import BrowserFactory
 from framework.utilities.screenshot import ScreenshotUtil
+from framework.services.user_service import UserService
 from pathlib import Path
 
 
@@ -186,7 +187,12 @@ def browser(request):
         driver.quit()
 
 
+@pytest.fixture
+def user_service(api_client):
 
+    return UserService(
+        api_client
+    )
 
 
 

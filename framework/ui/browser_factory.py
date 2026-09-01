@@ -1,8 +1,12 @@
+#import os
+
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 
 from config.ui_config import UIConfig
+from config.environment_config import EnvironmentConfig
+from framework.exceptions.framework_exceptions import ConfigurationException
 
 
 class BrowserFactory:
@@ -17,24 +21,26 @@ class BrowserFactory:
             if UIConfig.HEADLESS:
                 options.add_argument("--headless=new")
 
-            options.add_argument("--no-sandbox")
-            options.add_argument("--disable-dev-shm-usage")
             options.add_argument("--window-size=1920,1080")
 
-            # Chromium binary inside Docker
-            options.binary_location = "/usr/bin/chromium"
+            # Docker-specific browser configuration
+            if EnvironmentConfig.is_docker():
+                options.add_argument("--no-sandbox")
+                options.add_argument("--disable-dev-shm-usage")
 
-            # Chromium driver inside Docker
-            service = Service(
-                "/usr/bin/chromedriver"
-            )
+                options.binary_location = "/usr/bin/chromium"
 
-            driver = webdriver.Chrome(
-                service=service,
+                service = Service("/usr/bin/chromedriver")
+
+                return webdriver.Chrome(
+                    service=service,
+                    options=options
+                )
+
+            # Local Mac / CI execution
+            return webdriver.Chrome(
                 options=options
             )
-
-            return driver
 
         elif UIConfig.BROWSER == "firefox":
 
@@ -47,12 +53,9 @@ class BrowserFactory:
                 options=options
             )
 
-        raise ValueError(
-            f"Unsupported browser: {UIConfig.BROWSER}"
+        raise ConfigurationException(
+            f"Unsupported browser configuration: {UIConfig.BROWSER}"
         )
-
-
-
 
 # from selenium import webdriver
 

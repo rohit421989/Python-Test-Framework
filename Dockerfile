@@ -17,5 +17,6 @@ COPY . .
 ENV HEADLESS=true
 ENV PYTEST_WORKERS=2
 ENV BROWSER=chrome
+ENV DOCKER_ENV=true
 
 CMD ["python", "run_test.py"]
