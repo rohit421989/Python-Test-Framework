@@ -1,3 +1,6 @@
+from urllib import response
+
+
 class LLMResponseValidator:
 
     @staticmethod
@@ -33,3 +36,30 @@ class LLMResponseValidator:
             f"Expected response to contain keyword '{keyword}'. "
             f"Actual response: {response.response}"
         )
+
+    @staticmethod
+    def assert_exact_response(response, expected_text):
+
+        actual = response.response.strip()
+
+        assert actual == expected_text, (
+            f"Expected exact response '{expected_text}', "
+            f"but received '{actual}'."
+        )
+
+
+    @staticmethod
+    def assert_no_markdown(response):
+
+        markdown_patterns = [
+            "```",
+            "# ",
+            "**"
+        ]
+
+        for pattern in markdown_patterns:
+            assert pattern not in response.response, (
+                f"Response contains unexpected Markdown "
+                f"pattern '{pattern}'. "
+                f"Actual response: {response.response}"
+            )    

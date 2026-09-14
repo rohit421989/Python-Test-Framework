@@ -129,3 +129,36 @@ def test_capital_of_india_response():
         result,
         "New Delhi"
     )
+
+
+@pytest.mark.ai
+def test_exact_llm_response():
+
+    response = LLMResponse(
+        prompt="Reply with exactly one word: PASS",
+        response="PASS",
+        model="mock-model",
+        tokens=1,
+        latency_ms=10
+    )
+
+    LLMResponseValidator.assert_exact_response(
+        response,
+        "PASS"
+    )
+
+
+@pytest.mark.ai
+def test_llm_response_contains_no_markdown():
+
+    response = LLMResponse(
+        prompt="Return plain text only",
+        response="Software testing validates software quality.",
+        model="mock-model",
+        tokens=8,
+        latency_ms=10
+    )
+
+    LLMResponseValidator.assert_no_markdown(
+        response
+    )    

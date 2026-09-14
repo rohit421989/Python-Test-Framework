@@ -8,3 +8,4 @@ pydantic
 sqlalchemy
 selenium
 openai
+python-dotenv
